@@ -1,8 +1,6 @@
 import * as core from "@actions/core";
-import * as exec from "actions-exec-listener";
 import { LayerCache } from "./src/LayerCache";
 import { ImageDetector } from "./src/ImageDetector";
-import { assertType } from "typescript-is";
 
 const main = async () => {
   const primaryKey = core.getInput(`key`, { required: true });
@@ -13,10 +11,8 @@ const main = async () => {
 
   const imageDetector = new ImageDetector();
 
-  let container = core.getInput(`container`).toLowerCase();
-  if (!container) {
-    container = "docker";
-  } else if (container != "docker" && container != "podman") {
+  const container = core.getInput(`container`).toLowerCase();
+  if (container !== "docker" && container !== "podman") {
     throw new Error("Wrong container name: " + container);
   }
 

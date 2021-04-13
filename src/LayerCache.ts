@@ -31,7 +31,7 @@ class LayerCache {
     return result;
   }
 
-  async store(key: string, container: ["docker" | "podman"]) {
+  async store(key: string, container: "docker" | "podman") {
     this.unformattedSaveKey = key;
 
     await this.saveImageAsUnpacked(container);
@@ -48,7 +48,7 @@ class LayerCache {
     return true;
   }
 
-  private async saveImageAsUnpacked(container: ["docker" | "podman"]) {
+  private async saveImageAsUnpacked(container: "docker" | "podman") {
     await fs.mkdir(this.getUnpackedTarDir(), { recursive: true });
     await this.exec(
       `sh -c`,
@@ -63,7 +63,7 @@ class LayerCache {
 
   private async makeRepotagsDockerSaveArgReady(
     repotags: string[],
-    container: ["docker" | "podman"]
+    container: "docker" | "podman"
   ): Promise<string[]> {
     const getMiddleIdsWithRepotag = async (id: string): Promise<string[]> => {
       return [id, ...(await this.getAllImageIdsFrom(id, container))];
@@ -73,7 +73,7 @@ class LayerCache {
 
   private async getAllImageIdsFrom(
     repotag: string,
-    container: ["docker" | "podman"]
+    container: "docker" | "podman"
   ): Promise<string[]> {
     const { stdoutStr: rawHistoryIds } = await this.exec(
       `${container} history -q`,
@@ -188,7 +188,7 @@ class LayerCache {
 
   async restore(
     primaryKey: string,
-    container: ["docker" | "podman"],
+    container: "docker" | "podman",
     restoreKeys?: string[]
   ) {
     const restoredCacheKey = await this.restoreRoot(primaryKey, restoreKeys);
@@ -281,7 +281,7 @@ class LayerCache {
     return result;
   }
 
-  private async loadImageFromUnpacked(container: ["docker" | "podman"]) {
+  private async loadImageFromUnpacked(container: "docker" | "podman") {
     await exec.exec(`sh -c`, [`tar cf - . | ${container} load`], {
       cwd: this.getUnpackedTarDir(),
     });

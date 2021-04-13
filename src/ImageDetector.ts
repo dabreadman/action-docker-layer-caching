@@ -2,7 +2,7 @@ import * as exec from "actions-exec-listener";
 import * as core from "@actions/core";
 
 export class ImageDetector {
-  async getExistingImages(container: ["docker" | "podman"]): Promise<string[]> {
+  async getExistingImages(container: "docker" | "podman"): Promise<string[]> {
     const existingSet = new Set<string>([]);
     const ids = (
       await exec.exec(`${container} image ls -q`, [], {
@@ -31,7 +31,7 @@ export class ImageDetector {
 
   async getImagesShouldSave(
     alreadRegisteredImages: string[],
-    container: ["docker" | "podman"]
+    container: "docker" | "podman"
   ): Promise<string[]> {
     const resultSet = new Set(await this.getExistingImages(container));
     alreadRegisteredImages.forEach((image) => resultSet.delete(image));

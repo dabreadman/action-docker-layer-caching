@@ -23,10 +23,9 @@ const main = async () => {
   assertType<string[]>(restoredImages);
 
   const imageDetector = new ImageDetector();
-  let container = core.getInput(`container`);
-  if (!container) {
-    container = "docker";
-  } else if (container != "docker" && container != "podman") {
+
+  const container = core.getInput(`container`).toLowerCase();
+  if (container !== "docker" && container !== "podman") {
     throw new Error("Wrong container name: " + container);
   }
 
