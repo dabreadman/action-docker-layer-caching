@@ -2,6 +2,7 @@ import * as core from "@actions/core";
 import * as exec from "actions-exec-listener";
 import { LayerCache } from "./src/LayerCache";
 import { ImageDetector } from "./src/ImageDetector";
+import { assertType } from "typescript-is";
 
 const main = async () => {
   const primaryKey = core.getInput(`key`, { required: true });
@@ -12,7 +13,16 @@ const main = async () => {
 
   const imageDetector = new ImageDetector();
 
-  const alreadyExistingImages = await imageDetector.getExistingImages();
+  let container = core.getInput(`container`).toLowerCase();
+  if (!container) {
+    container = "docker";
+  } else if (container != "docker" && container != "podman") {
+    throw new Error("Wrong container name: " + container);
+  }
+
+  const alreadyExistingImages = await imageDetector.getExistingImages(
+    container
+  );
   core.saveState(
     `already-existing-images`,
     JSON.stringify(alreadyExistingImages)
@@ -23,7 +33,11 @@ const main = async () => {
     core.getInput(`concurrency`, { required: true }),
     10
   );
-  const restoredKey = await layerCache.restore(primaryKey, restoreKeys);
+  const restoredKey = await layerCache.restore(
+    primaryKey,
+    container,
+    restoreKeys
+  );
   await layerCache.cleanUp();
 
   core.saveState(
@@ -33,7 +47,7 @@ const main = async () => {
   core.saveState(
     `restored-images`,
     JSON.stringify(
-      await imageDetector.getImagesShouldSave(alreadyExistingImages)
+      await imageDetector.getImagesShouldSave(alreadyExistingImages, container)
     )
   );
 };
