@@ -45,5 +45,3 @@ main().catch((e) => {
   core.saveState(`restored-key`, JSON.stringify(``));
   core.saveState(`restored-images`, JSON.stringify([]));
 });
-
-export { main };

@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "main": "index.ts",
   "repository": "https://github.com/satackey/action-docker-layer-caching.git",
+  "type": "module",
   "author": "satackey <21271711+satackey@users.noreply.github.com>",
   "license": "MIT",
   "dependencies": {
